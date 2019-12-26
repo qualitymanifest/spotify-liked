@@ -7,6 +7,7 @@ mongoose.connect(
 	{ useNewUrlParser: true, useUnifiedTopology: true },
 	err => console.log("Mongoose connected", err)
 );
+require("./models/User");
 require("./services/passport");
 const app = express();
 require("./routes/authRoutes")(app);
