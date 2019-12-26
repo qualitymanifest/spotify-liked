@@ -1,0 +1,18 @@
+{
+	"name": "spotify-liked",
+	"version": "0.0.1",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js",
+		"dev": "nodemon index.js"
+	},
+	"author": "qualitymanifest",
+	"license": "ISC",
+	"dependencies": {
+		"express": "^4.17.1",
+		"nodemon": "^2.0.2",
+		"passport": "^0.4.1",
+		"passport-spotify": "^1.1.0"
+	}
+}
