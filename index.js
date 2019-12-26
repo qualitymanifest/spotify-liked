@@ -12,6 +12,12 @@ mongoose.connect(
   err => console.log("Mongoose connected", err)
 );
 const app = express();
+app.use((req, res, next) => {
+  if (req.secure || req.hostname === "localhost") {
+    return next();
+  }
+  res.redirect(`https://${req.hostname}${req.url}`);
+});
 app.use(
   cookieSession({
     maxAge: 30 * 24 * 60 * 60 * 1000,
