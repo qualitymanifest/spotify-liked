@@ -12,6 +12,7 @@ mongoose.connect(
   err => console.log("Mongoose connected", err)
 );
 const app = express();
+app.enable("trust proxy");
 app.use((req, res, next) => {
   if (req.secure || req.hostname === "localhost") {
     return next();
