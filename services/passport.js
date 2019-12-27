@@ -28,7 +28,8 @@ passport.use(
     {
       clientID: keys.spotifyClientID,
       clientSecret: keys.spotifyClientSecret,
-      callbackURL: "http://localhost:3000/auth/spotify/callback",
+      callbackURL: "/auth/spotify/callback",
+      proxy: true,
       scope: [
         "playlist-modify-public",
         "user-library-read",
