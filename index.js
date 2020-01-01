@@ -8,7 +8,7 @@ require("./models/User");
 require("./services/passport");
 mongoose.connect(
   keys.mongoURI,
-  { useNewUrlParser: true, useUnifiedTopology: true },
+  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false },
   err => console.log("Mongoose connected", err)
 );
 const app = express();
@@ -27,7 +27,14 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-require("./routes/authRoutes")(app);
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api") && !req.isAuthenticated()) {
+    res.send(401, `Route ${req.path} requires authentication`);
+  }
+  return next();
+});
+require("./routes/auth")(app);
+require("./routes/api")(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
