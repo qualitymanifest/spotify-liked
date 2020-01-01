@@ -1,10 +1,36 @@
 const axios = require("axios");
+const mongoose = require("mongoose");
 
+const UserArtist = mongoose.model("userArtist");
+const User = mongoose.model("users");
 require("../middleware/axios");
 
 module.exports = app => {
+  // Get tracks for a particular artist
+  app.get("/api/liked_tracks/:artistId", async (req, res) => {
+    UserArtist.find(
+      {
+        userId: req.user.id,
+        artistId: req.params.artistId
+      },
+      (err, artist) => {
+        res.send(artist);
+      }
+    );
+  });
+  // Get an alphabetically sorted list of artists, without tracks
+  app.get("/api/liked_tracks", async (req, res) => {
+    UserArtist.find(
+      { userId: req.user.id },
+      "artistId name image",
+      { sort: { name: 1 } },
+      (err, artists) => {
+        res.send(artists);
+      }
+    );
+  });
   // Update the user's liked songs
-  app.put("/api/liked_songs", async (req, res) => {
+  app.put("/api/liked_tracks", async (req, res) => {
     // Start out by using the user's current access token
     // If it fails, an axios interceptor will refresh the token and retry the call,
     // but req.user.accessToken will still be the same here. So, for recursive calls,
@@ -13,7 +39,7 @@ module.exports = app => {
       Authorization: `Bearer ${req.user.accessToken}`,
       userId: req.user.id
     };
-    const getLiked = async (
+    const getLikedTracks = async (
       accum = [],
       url = "https://api.spotify.com/v1/me/tracks",
       headers = originalHeaders
@@ -28,7 +54,7 @@ module.exports = app => {
         accum.push(...spotifyRes.data.items);
         // Get the next 50 liked songs, or return if there are no more
         if (spotifyRes.data.next) {
-          return await getLiked(
+          return await getLikedTracks(
             accum,
             spotifyRes.data.next,
             spotifyRes.config.headers
@@ -37,7 +63,36 @@ module.exports = app => {
         return accum;
       }
     };
-    const liked = await getLiked();
-    // TODO: Process and add to DB
+    const likedTracks = await getLikedTracks();
+
+    const artists = {};
+    // Process tracks into format for DB
+    likedTracks.forEach(lt => {
+      const track = {
+        uri: lt.track.uri,
+        name: lt.track.name,
+        albumName: lt.track.album.name,
+        duration: Math.floor(lt.track.duration_ms / 1000)
+      };
+      lt.track.artists.forEach(artist => {
+        if (!artists[artist.name]) {
+          artists[artist.name] = {
+            userId: req.user.id,
+            artistId: artist.id,
+            name: artist.name,
+            tracks: [track]
+          };
+        } else {
+          artists[artist.name].tracks.push(track);
+        }
+      });
+    });
+    // Maybe use a transaction? https://mongoosejs.com/docs/transactions.html
+    await UserArtist.deleteMany({ userId: req.user.id });
+    await UserArtist.insertMany(Object.values(artists));
+    await User.findByIdAndUpdate(req.user.id, {
+      lastUpdate: new Date()
+    });
+    res.send(200);
   });
 };
