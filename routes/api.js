@@ -5,11 +5,36 @@ const UserArtist = mongoose.model("userArtist");
 const User = mongoose.model("users");
 require("../middleware/axios");
 
+const getTracksForArtist = async (userId, artistId) => {
+  return await UserArtist.findOne(
+    {
+      userId,
+      artistId
+    },
+    "tracks"
+  ).exec();
+};
+
 module.exports = app => {
+  // Add tracks to the end of the playlist, without changing playback
   app.put("/api/queue_tracks/:artistId", async (req, res) => {
-    // TODO: Add to the end of playlist, do not change playback
+    const result = await getTracksForArtist(req.user.id, req.params.artistId);
+    const trackUris = result.tracks.map(t => t.uri);
+    await axios.post(
+      `https://api.spotify.com/v1/playlists/${req.user.playlistId}/tracks`,
+      { uris: trackUris },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${req.user.accessToken}`,
+          userId: req.user.id
+        }
+      }
+    );
+    res.sendStatus(200);
   });
 
+  // Add tracks to the playlist and play them, with an optional offset
   app.put("/api/play_tracks/:artistId", async (req, res) => {
     // TODO: If there is no active player, will get 404 with
     // error.response.data.error.reason === "NO_ACTIVE_DEVICE"
@@ -19,6 +44,7 @@ module.exports = app => {
     // https://developer.spotify.com/documentation/web-api/reference/player/transfer-a-users-playback/
 
     // TODO: Handle case where there are more than 100 tracks (Spotify max)
+    // Could probably split out function for adding tracks from /queue_tracks route
     // TODO: Handle case where playlist does not exist
     const playbackOptions = {
       context_uri: `spotify:playlist:${req.user.playlistId}`
@@ -26,39 +52,31 @@ module.exports = app => {
     if (req.query.offset) {
       playbackOptions.offset = { uri: req.query.offset };
     }
-    UserArtist.findOne(
+    const result = await getTracksForArtist(req.user.id, req.params.artistId);
+    const trackUris = result.tracks.map(t => t.uri);
+    await axios.put(
+      `https://api.spotify.com/v1/playlists/${req.user.playlistId}/tracks`,
+      { uris: trackUris },
       {
-        userId: req.user.id,
-        artistId: req.params.artistId
-      },
-      "tracks",
-      async (err, result) => {
-        const trackUris = result.tracks.map(t => t.uri);
-        await axios.put(
-          `https://api.spotify.com/v1/playlists/${req.user.playlistId}/tracks`,
-          { uris: trackUris },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${req.user.accessToken}`,
-              userId: req.user.id
-            }
-          }
-        );
-        await axios.put(
-          "https://api.spotify.com/v1/me/player/play",
-          playbackOptions,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${req.user.accessToken}`,
-              userId: req.user.id
-            }
-          }
-        );
-        res.sendStatus(200);
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${req.user.accessToken}`,
+          userId: req.user.id
+        }
       }
     );
+    await axios.put(
+      "https://api.spotify.com/v1/me/player/play",
+      playbackOptions,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${req.user.accessToken}`,
+          userId: req.user.id
+        }
+      }
+    );
+    res.sendStatus(200);
   });
 
   // Create the playlist we will use
@@ -82,15 +100,8 @@ module.exports = app => {
 
   // Get tracks for a particular artist
   app.get("/api/liked_tracks/:artistId", async (req, res) => {
-    UserArtist.find(
-      {
-        userId: req.user.id,
-        artistId: req.params.artistId
-      },
-      (err, artist) => {
-        res.send(artist);
-      }
-    );
+    const result = await getTracksForArtist(req.user.id, req.params.artistId);
+    res.send(result.tracks);
   });
 
   // Get an alphabetically sorted list of artists, without tracks
