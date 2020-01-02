@@ -6,6 +6,80 @@ const User = mongoose.model("users");
 require("../middleware/axios");
 
 module.exports = app => {
+  app.put("/api/queue_tracks/:artistId", async (req, res) => {
+    // TODO: Add to the end of playlist, do not change playback
+  });
+
+  app.put("/api/play_tracks/:artistId", async (req, res) => {
+    // TODO: If there is no active player, will get 404 with
+    // error.response.data.error.reason === "NO_ACTIVE_DEVICE"
+    // If this happens, present the user with a list of their devices:
+    // https://developer.spotify.com/documentation/web-api/reference/player/get-a-users-available-devices/
+    // and activate the one they choose:
+    // https://developer.spotify.com/documentation/web-api/reference/player/transfer-a-users-playback/
+
+    // TODO: Handle case where there are more than 100 tracks (Spotify max)
+    // TODO: Handle case where playlist does not exist
+    const playbackOptions = {
+      context_uri: `spotify:playlist:${req.user.playlistId}`
+    };
+    if (req.query.offset) {
+      playbackOptions.offset = { uri: req.query.offset };
+    }
+    UserArtist.findOne(
+      {
+        userId: req.user.id,
+        artistId: req.params.artistId
+      },
+      "tracks",
+      async (err, result) => {
+        const trackUris = result.tracks.map(t => t.uri);
+        await axios.put(
+          `https://api.spotify.com/v1/playlists/${req.user.playlistId}/tracks`,
+          { uris: trackUris },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${req.user.accessToken}`,
+              userId: req.user.id
+            }
+          }
+        );
+        await axios.put(
+          "https://api.spotify.com/v1/me/player/play",
+          playbackOptions,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${req.user.accessToken}`,
+              userId: req.user.id
+            }
+          }
+        );
+        res.sendStatus(200);
+      }
+    );
+  });
+
+  // Create the playlist we will use
+  app.post("/api/playlist", async (req, res) => {
+    const spotifyRes = await axios.post(
+      `https://api.spotify.com/v1/users/${req.user.spotifyId}/playlists`,
+      { name: "spotify-liked" },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${req.user.accessToken}`,
+          userId: req.user.id
+        }
+      }
+    );
+    await User.findByIdAndUpdate(req.user.id, {
+      playlistId: spotifyRes.data.id
+    });
+    res.sendStatus(201);
+  });
+
   // Get tracks for a particular artist
   app.get("/api/liked_tracks/:artistId", async (req, res) => {
     UserArtist.find(
@@ -18,6 +92,7 @@ module.exports = app => {
       }
     );
   });
+
   // Get an alphabetically sorted list of artists, without tracks
   app.get("/api/liked_tracks", async (req, res) => {
     UserArtist.find(
@@ -29,8 +104,9 @@ module.exports = app => {
       }
     );
   });
+
   // Create or replace the user's liked songs on the DB
-  app.post("/api/liked_tracks", async (req, res) => {
+  app.put("/api/liked_tracks", async (req, res) => {
     let headers = {
       Authorization: `Bearer ${req.user.accessToken}`,
       userId: req.user.id
@@ -94,6 +170,6 @@ module.exports = app => {
     await User.findByIdAndUpdate(req.user.id, {
       lastUpdate: new Date()
     });
-    res.send(200);
+    res.sendStatus(200);
   });
 };

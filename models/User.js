@@ -7,7 +7,8 @@ const userSchema = new Schema({
   emails: Array,
   accessToken: String,
   refreshToken: String,
-  lastUpdate: Date
+  lastUpdate: Date,
+  playlistId: String
 });
 
 mongoose.model("users", userSchema);
