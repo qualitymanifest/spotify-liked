@@ -11,7 +11,8 @@ const userArtistSchema = new Schema({
       uri: String,
       name: String,
       albumName: String,
-      duration: String
+      duration: String,
+      featuredArtists: Array
     }
   ]
 });

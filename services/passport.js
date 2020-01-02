@@ -48,6 +48,8 @@ passport.use(
       } else {
         const user = await new User({
           spotifyId: profile.id,
+          displayName: profile.displayName,
+          emails: profile.emails,
           accessToken,
           refreshToken
         }).save();
