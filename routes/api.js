@@ -3,7 +3,11 @@ const mongoose = require("mongoose");
 
 const UserArtist = mongoose.model("userArtist");
 const User = mongoose.model("users");
-const chunk = require("../utils/chunk");
+const {
+  createPlaylist,
+  addTracksToPlaylist,
+  getChunkedUris
+} = require("../utils/apiHelpers");
 require("../middleware/axios");
 
 const getTracksForArtist = async (userId, artistId) => {
@@ -14,25 +18,6 @@ const getTracksForArtist = async (userId, artistId) => {
     },
     "tracks"
   ).exec();
-};
-
-const addTracksToPlaylist = async (trackUris, user) => {
-  return await axios.post(
-    `https://api.spotify.com/v1/playlists/${user.playlistId}/tracks`,
-    { uris: trackUris },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.accessToken}`,
-        userId: user.id
-      }
-    }
-  );
-};
-
-const getChunkedUris = (tracks, size) => {
-  const trackUris = tracks.map(t => t.uri);
-  return chunk(trackUris, size);
 };
 
 module.exports = app => {
@@ -55,7 +40,6 @@ module.exports = app => {
     // and activate the one they choose:
     // https://developer.spotify.com/documentation/web-api/reference/player/transfer-a-users-playback/
 
-    // TODO: Handle case where playlist does not exist
     // TODO: Fix timing issue where sometimes old playlist starts playing even though
     // the playlist was replaced successfully
     const playbackOptions = {
@@ -96,16 +80,10 @@ module.exports = app => {
 
   // Create the playlist we will use
   app.post("/api/playlist", async (req, res) => {
-    const spotifyRes = await axios.post(
-      `https://api.spotify.com/v1/users/${req.user.spotifyId}/playlists`,
-      { name: "spotify-liked" },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${req.user.accessToken}`,
-          userId: req.user.id
-        }
-      }
+    const spotifyRes = await createPlaylist(
+      req.user.id,
+      req.user.spotifyId,
+      req.user.accessToken
     );
     await User.findByIdAndUpdate(req.user.id, {
       playlistId: spotifyRes.data.id

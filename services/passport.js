@@ -3,6 +3,7 @@ const SpotifyStrategy = require("passport-spotify").Strategy;
 const mongoose = require("mongoose");
 
 const keys = require("../config/keys");
+const { createPlaylist } = require("../utils/apiHelpers");
 const User = mongoose.model("users");
 
 passport.serializeUser((user, done) => {
@@ -50,6 +51,15 @@ passport.use(
           accessToken,
           refreshToken
         }).save();
+        // Create the playlist. Had to wait until after save to get user id
+        const spotifyRes = await createPlaylist(
+          user.id,
+          profile.id,
+          accessToken
+        );
+        await User.findByIdAndUpdate(user.id, {
+          playlistId: spotifyRes.data.id
+        });
         return done(null, user);
       }
     }
