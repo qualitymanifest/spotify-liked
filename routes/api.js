@@ -33,15 +33,6 @@ module.exports = app => {
 
   // Add tracks to the playlist and play them, with an optional offset
   app.put("/api/play_tracks/:artistId", async (req, res) => {
-    // TODO: If there is no active player, will get 404 with
-    // error.response.data.error.reason === "NO_ACTIVE_DEVICE"
-    // If this happens, present the user with a list of their devices:
-    // https://developer.spotify.com/documentation/web-api/reference/player/get-a-users-available-devices/
-    // and activate the one they choose:
-    // https://developer.spotify.com/documentation/web-api/reference/player/transfer-a-users-playback/
-
-    // TODO: Fix timing issue where sometimes old playlist starts playing even though
-    // the playlist was replaced successfully
     const playbackOptions = {
       context_uri: `spotify:playlist:${req.user.playlistId}`
     };
