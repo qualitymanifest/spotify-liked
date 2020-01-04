@@ -1,5 +1,5 @@
-import { h, Component } from "preact";
-import { Router } from "preact-router";
+import { h } from "preact";
+import { Switch, Route } from "wouter-preact";
 
 import Header from "./header";
 
@@ -7,28 +7,21 @@ import Header from "./header";
 import Home from "../routes/home";
 import Profile from "../routes/profile";
 
-export default class App extends Component {
-  /** Gets fired when the route changes.
-   *	@param {Object} event		"change" event from [preact-router](http://git.io/preact-router)
-   *	@param {string} event.url	The newly routed URL
-   */
-  handleRoute = e => {
-    this.currentUrl = e.url;
-    if (e.url.includes("profile")) {
-      Router("/bar");
-    }
-  };
+const App = () => (
+  <div id="app">
+    <Header />
+    <Switch>
+      <Route path="/">
+        <Home />
+      </Route>
+      <Route path="/profile/">
+        <Profile path="/profile/" user="me" />
+      </Route>
+      <Route path="/profile/:user">
+        <Profile path="/profile/:user" />
+      </Route>
+    </Switch>
+  </div>
+);
 
-  render() {
-    return (
-      <div id="app">
-        <Header />
-        <Router onChange={this.handleRoute}>
-          <Home path="/" />
-          <Profile path="/profile/" user="me" />
-          <Profile path="/profile/:user" />
-        </Router>
-      </div>
-    );
-  }
-}
+export default App;

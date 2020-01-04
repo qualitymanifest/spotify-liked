@@ -50,7 +50,7 @@
   "dependencies": {
     "preact": "^10.0.1",
     "preact-render-to-string": "^5.1.0",
-    "preact-router": "^3.0.0"
+    "wouter-preact": "^2.4.0"
   },
   "jest": {
     "preset": "jest-preset-preact",
