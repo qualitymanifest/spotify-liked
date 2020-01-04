@@ -30,9 +30,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use((req, res, next) => {
   if (req.path.startsWith("/api") && !req.isAuthenticated()) {
-    res.send(401, `Route ${req.path} requires authentication`);
+    res.status(401).send(`Route ${req.path} requires authentication`);
   }
-  return next();
 });
 require("./routes/auth")(app);
 require("./routes/api")(app);
