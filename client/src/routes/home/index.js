@@ -18,11 +18,8 @@ const Home = () => {
     <div class={style.home}>
       <h1>Home</h1>
       {artists.map(artist => (
-        <button onClick={() => playTracks(artist.artistId)}>
-          {artist.name}
-        </button>
+        <img src={artist.image} onClick={() => playTracks(artist.artistId)} />
       ))}
-      <p>This is the Home component.</p>
     </div>
   );
 };

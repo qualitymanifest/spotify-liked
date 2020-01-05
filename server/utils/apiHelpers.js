@@ -5,7 +5,7 @@ const chunk = require("./chunk");
 const createPlaylist = async (userId, spotifyId, accessToken) => {
   return await axios.post(
     `https://api.spotify.com/v1/users/${spotifyId}/playlists`,
-    { name: "spotify-liked" },
+    { name: "spotify-liked", public: "false" },
     {
       headers: {
         "Content-Type": "application/json",

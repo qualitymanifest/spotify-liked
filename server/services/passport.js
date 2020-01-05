@@ -32,7 +32,7 @@ passport.use(
       callbackURL: "/auth/spotify/callback",
       proxy: true,
       scope: [
-        "playlist-modify-public",
+        "playlist-modify-private",
         "user-library-read",
         "user-read-email",
         "user-read-playback-state",
