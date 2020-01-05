@@ -11,7 +11,8 @@
     "serve": "preact build && serve build --single",
     "dev": "preact watch",
     "lint": "eslint src",
-    "test": "jest"
+    "test": "jest",
+    "analyze": "preact build --analyze"
   },
   "eslintConfig": {
     "extends": [
