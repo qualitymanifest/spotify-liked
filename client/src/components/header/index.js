@@ -27,10 +27,9 @@ const loginButton = user => {
 
 const Header = () => {
   const user = useContext(UserContext);
-  console.log(user);
   return (
     <header class={style.header}>
-      <h1>Preact App</h1>
+      <h1>spotify-liked</h1>
       <nav>
         <ActiveLink href="/">Home</ActiveLink>
         <ActiveLink href="/profile">Me</ActiveLink>

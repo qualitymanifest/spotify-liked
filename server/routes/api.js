@@ -54,19 +54,21 @@ module.exports = app => {
     );
     // If there were more than 100 uris, add the rest
     restUris.forEach(async uris => await addTracksToPlaylist(uris, req.user));
-    // Start playback
-    await axios.put(
-      "https://api.spotify.com/v1/me/player/play",
-      playbackOptions,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${req.user.accessToken}`,
-          userId: req.user.id
+    setTimeout(async () => {
+      // Start playback
+      await axios.put(
+        "https://api.spotify.com/v1/me/player/play",
+        playbackOptions,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${req.user.accessToken}`,
+            userId: req.user.id
+          }
         }
-      }
-    );
-    res.sendStatus(200);
+      );
+      res.sendStatus(200);
+    }, 1000);
   });
 
   // Create the playlist we will use

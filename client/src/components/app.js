@@ -7,7 +7,7 @@ import Header from "./header";
 import Home from "../routes/home";
 import Profile from "../routes/profile";
 import UserContext from "../UserContext";
-import fetchUser from "../utils/fetchUser";
+import { fetchUser } from "../utils/requests";
 
 const App = () => {
   const [user, setUser] = useState(null);
