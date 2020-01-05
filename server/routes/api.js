@@ -68,7 +68,7 @@ module.exports = app => {
         }
       );
       res.sendStatus(200);
-    }, 1000);
+    }, 500);
   });
 
   // Create the playlist we will use
