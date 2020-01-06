@@ -16,7 +16,7 @@ const getTracksForArtist = async (userId, artistId) => {
       userId,
       artistId
     },
-    "tracks"
+    "name artistId tracks"
   ).exec();
 };
 
@@ -87,7 +87,7 @@ module.exports = app => {
   // Get tracks for a particular artist
   app.get("/api/liked_tracks/:artistId", async (req, res) => {
     const result = await getTracksForArtist(req.user.id, req.params.artistId);
-    res.send(result.tracks);
+    res.send(result);
   });
 
   // Get an alphabetically sorted list of artists, without tracks
