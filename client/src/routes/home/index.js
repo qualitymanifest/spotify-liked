@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "preact/hooks";
 
 import UserContext from "../../UserContext";
 import { getLikedTracks } from "../../utils/requests";
-import ArtistCard from "../../components/artistCard";
+import ArtistCardWrapper from "../../components/artistCardWrapper";
 
 const Home = () => {
   const user = useContext(UserContext);
@@ -16,9 +16,7 @@ const Home = () => {
   }, [user]);
   return (
     <div class="d-flex flex-wrap justify-content-center">
-      {artists.map(artist => (
-        <ArtistCard artist={artist} />
-      ))}
+      <ArtistCardWrapper artists={artists} />
     </div>
   );
 };

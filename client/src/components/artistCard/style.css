@@ -1,4 +1,6 @@
 .card {
+  border: 1px solid lightgray;
+  border-radius: 10px;
   width: 10vw;
   min-width: 145px;
 }
@@ -9,4 +11,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
+}
+
+.card *:not(div) {
+  cursor: pointer;
 }

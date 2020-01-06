@@ -1,22 +1,37 @@
 import { h } from "preact";
-import { Card, Button, Row, Col } from "react-bootstrap";
+import { MdQueue, MdQueueMusic } from "react-icons/md";
 
 import style from "./style";
-import { playTracks } from "../../utils/requests";
+import { QUEUE, VIEW, PLAY } from "../../utils/constants";
 
 const ArtistCard = ({ artist }) => (
-  <Card className={`${style.card} mx-1 my-1`}>
-    <Card.Title className={style.cardTitle}>{artist.name}</Card.Title>
-    <Card.Img src={artist.image} onClick={() => playTracks(artist.artistId)} />
-    <Row className="mt-2">
-      <Col xs="6" className="text-center">
-        Tracks
-      </Col>
-      <Col xs="6" className="text-center">
-        Queue
-      </Col>
-    </Row>
-  </Card>
+  <div className={`${style.card} mx-1 my-1`}>
+    <span
+      title={`Play ${artist.name}`}
+      className="cardArtist"
+      data-action={PLAY}
+      data-id={artist.artistId}
+    >
+      <h5 className={style.cardTitle}>{artist.name}</h5>
+      <img src={artist.image} className="mw-100" />
+    </span>
+    <div className="d-flex justify-content-around">
+      <MdQueue
+        title={`Queue ${artist.name}`}
+        size="2em"
+        className="m-1"
+        data-action={QUEUE}
+        data-id={artist.artistId}
+      />
+      <MdQueueMusic
+        title={`View tracks by ${artist.name}`}
+        size="2em"
+        className="m-1"
+        data-action={VIEW}
+        data-id={artist.artistId}
+      />
+    </div>
+  </div>
 );
 
 export default ArtistCard;
