@@ -1,0 +1,12 @@
+.card {
+  width: 10vw;
+  min-width: 145px;
+}
+
+.cardTitle {
+  padding: 0 2%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}

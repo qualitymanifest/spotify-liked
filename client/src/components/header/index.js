@@ -1,41 +1,51 @@
 import { h } from "preact";
 import { useContext } from "preact/hooks";
-import { Link, useRoute } from "wouter-preact";
-
-import style from "./style.css";
+import { Link } from "wouter-preact";
+import { Navbar, Nav } from "react-bootstrap";
 import UserContext from "../../UserContext";
-
-const ActiveLink = props => {
-  const [isActive] = useRoute(props.href);
-  return (
-    <Link {...props}>
-      <a class={isActive ? style.active : ""}>{props.children}</a>
-    </Link>
-  );
-};
 
 const loginButton = user => {
   switch (user) {
     case null:
       return "";
     case false:
-      return <a href="/auth/spotify">Login with Spotify</a>;
+      return (
+        <Nav.Link href="/auth/spotify" className="mx-auto">
+          Login with Spotify
+        </Nav.Link>
+      );
     default:
-      return <a href="/auth/logout">Logout</a>;
+      return (
+        <Nav.Link href="/auth/logout" className="mx-auto">
+          Logout
+        </Nav.Link>
+      );
   }
 };
 
 const Header = () => {
   const user = useContext(UserContext);
   return (
-    <header class={style.header}>
-      <h1>spotify-liked</h1>
-      <nav>
-        <ActiveLink href="/">Home</ActiveLink>
-        <ActiveLink href="/profile">Me</ActiveLink>
-        {loginButton(user)}
-      </nav>
-    </header>
+    <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
+      <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+        <Nav className="ml-auto">
+          <Nav.Link as={Link} href="/" className="mx-auto">
+            Home
+          </Nav.Link>
+          <Nav.Link as={Link} href="/readme" className="mx-auto">
+            README
+          </Nav.Link>
+          {user && (
+            <Nav.Link as={Link} href="/settings" className="mx-auto">
+              Settings
+            </Nav.Link>
+          )}
+          {loginButton(user)}
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
   );
 };
 

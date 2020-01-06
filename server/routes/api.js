@@ -68,7 +68,7 @@ module.exports = app => {
         }
       );
       res.sendStatus(200);
-    }, 700);
+    }, 750);
   });
 
   // Create the playlist we will use
@@ -149,7 +149,7 @@ module.exports = app => {
           userId: req.user.id,
           artistId: artist.id,
           name: artist.name,
-          image: images ? images[images.length - 1].url : "", // Using album art, not worth trouble of getting artist images
+          image: images ? images[images.length - 2].url : "", // Using album art, not worth trouble of getting artist images
           tracks: [processedTrack]
         };
       } else {

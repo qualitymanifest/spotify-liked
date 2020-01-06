@@ -1,9 +1,9 @@
 import { h } from "preact";
 import { useContext, useEffect, useState } from "preact/hooks";
 
-import style from "./style";
 import UserContext from "../../UserContext";
-import { playTracks, getLikedTracks } from "../../utils/requests";
+import { getLikedTracks } from "../../utils/requests";
+import ArtistCard from "../../components/artistCard";
 
 const Home = () => {
   const user = useContext(UserContext);
@@ -15,10 +15,9 @@ const Home = () => {
     }
   }, [user]);
   return (
-    <div class={style.home}>
-      <h1>Home</h1>
+    <div class="d-flex flex-wrap justify-content-center">
       {artists.map(artist => (
-        <img src={artist.image} onClick={() => playTracks(artist.artistId)} />
+        <ArtistCard artist={artist} />
       ))}
     </div>
   );
