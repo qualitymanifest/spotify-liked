@@ -5,6 +5,24 @@
   min-width: 145px;
 }
 
+.cardArtist {
+  position: relative;
+  max-width: 100%;
+  height: auto;
+}
+
+.cardArtist svg {
+  position: absolute;
+  top: calc(50% - 24px);
+  left: calc(50% - 24px);
+  z-index: 1;
+  opacity: 0.3;
+}
+
+.cardArtist:hover svg {
+  opacity: 1;
+}
+
 .cardTitle {
   padding: 0 2%;
   white-space: nowrap;
@@ -13,6 +31,15 @@
   text-align: center;
 }
 
-.card *:not(div) {
+.cardSvg {
+  transition: all 150ms ease-in-out;
+}
+
+.cardSvg:hover {
+  transform: scale(1.1);
+}
+
+.card img,
+.card svg {
   cursor: pointer;
 }
