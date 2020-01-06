@@ -1,5 +1,7 @@
 import { h } from "preact";
 import { Modal } from "react-bootstrap";
+
+import style from "./style";
 import { playTracks } from "../../utils/requests";
 
 const TrackList = ({ artist, show, toggleModal }) => {
@@ -15,7 +17,10 @@ const TrackList = ({ artist, show, toggleModal }) => {
         </Modal.Header>
         <Modal.Body>
           {artist.tracks.map(track => (
-            <div onClick={() => selectTrack(artist.artistId, track.uri)}>
+            <div
+              className={style.track}
+              onClick={() => selectTrack(artist.artistId, track.uri)}
+            >
               <p>{track.name}</p>
             </div>
           ))}

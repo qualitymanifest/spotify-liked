@@ -1,5 +1,6 @@
 import { h, Component } from "preact";
 
+import cardStyle from "../artistCard/style";
 import ArtistCard from "../artistCard";
 import TrackList from "../trackList";
 import { QUEUE, VIEW, PLAY } from "../../utils/constants";
@@ -13,7 +14,7 @@ const searchElementPath = (el, count = 0) => {
   if (!action) {
     return searchElementPath(el.parentNode, ++count);
   }
-  return { action, id };
+  return { action, id, el };
 };
 
 // The purpose of this class is to eliminate potentially thousands
@@ -25,11 +26,21 @@ class ArtistCardContainer extends Component {
     window.addEventListener("click", async e => {
       const data = searchElementPath(e.target);
       if (data) {
+        const existingSuccess = document.querySelector(`.${cardStyle.success}`);
+        if (existingSuccess) {
+          existingSuccess.classList.remove(cardStyle.success);
+        }
         if (data.action === PLAY) {
-          playTracks(data.id, data.uri);
+          data.el.classList.add(cardStyle.loading);
+          await playTracks(data.id, data.uri);
+          data.el.classList.remove(cardStyle.loading);
+          data.el.classList.add(cardStyle.success);
         }
         if (data.action === QUEUE) {
-          queueTracks(data.id);
+          data.el.classList.add(cardStyle.loading);
+          await queueTracks(data.id);
+          data.el.classList.remove(cardStyle.loading);
+          data.el.classList.add(cardStyle.success);
         }
         if (data.action === VIEW) {
           const result = await getLikedTracks(data.id);

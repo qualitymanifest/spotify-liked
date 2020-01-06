@@ -1,3 +1,7 @@
+:root {
+  --spotifyGreen: rgb(29, 185, 84);
+}
+
 .card {
   border: 1px solid lightgray;
   border-radius: 10px;
@@ -9,6 +13,7 @@
   position: relative;
   max-width: 100%;
   height: auto;
+  color: white;
 }
 
 .cardArtist svg {
@@ -20,6 +25,7 @@
 }
 
 .cardArtist:hover svg {
+  transform: scale(1.1);
   opacity: 1;
 }
 
@@ -42,4 +48,30 @@
 .card img,
 .card svg {
   cursor: pointer;
+}
+
+/* play button loading class is on parent element
+queue button loading class is on the svg */
+.loading svg,
+svg.loading {
+  opacity: 1;
+  animation: shadow-pulse 1s infinite;
+}
+.success svg,
+svg.success {
+  opacity: 1;
+  color: var(--spotifyGreen);
+}
+
+.play {
+  border-radius: 50%;
+}
+
+@keyframes shadow-pulse {
+  0% {
+    box-shadow: 0 0 0 0px var(--spotifyGreen);
+  }
+  100% {
+    box-shadow: 0 0 0 15px rgba(0, 0, 0, 0);
+  }
 }
