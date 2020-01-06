@@ -19,14 +19,14 @@ const ArtistCard = ({ artist }) => (
       <MdQueue
         title={`Queue ${artist.name}`}
         size="2em"
-        className="m-1"
+        className="my-2"
         data-action={QUEUE}
         data-id={artist.artistId}
       />
       <MdQueueMusic
         title={`View tracks by ${artist.name}`}
         size="2em"
-        className="m-1"
+        className="my-2"
         data-action={VIEW}
         data-id={artist.artistId}
       />
