@@ -1,3 +1,28 @@
+:root {
+  --spotifyGreen: rgb(29, 185, 84);
+}
+
 .track {
   cursor: pointer;
+}
+
+.loading {
+  animation: pulsate 1s infinite;
+}
+
+.success {
+  color: var(--spotifyGreen);
+}
+
+@keyframes pulsate {
+  0% {
+    color: #212529;
+  }
+  50% {
+    opacity: 0.5;
+    color: var(--spotifyGreen);
+  }
+  100% {
+    color: #212529;
+  }
 }

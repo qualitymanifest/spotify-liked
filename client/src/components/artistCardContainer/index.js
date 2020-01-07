@@ -4,10 +4,11 @@ import cardStyle from "../artistCard/style";
 import ArtistCard from "../artistCard";
 import TrackList from "../trackList";
 import { QUEUE, VIEW, PLAY } from "../../utils/constants";
+import animateAndCall from "../../utils/animateAndCall";
 import { playTracks, queueTracks, getLikedTracks } from "../../utils/requests";
 
 const searchElementPath = (el, count = 0) => {
-  // SVG children elements were swallowing clicks if, even if
+  // SVG children elements were swallowing clicks, even if
   // they were on a button. Look upward a few elements
   if (!el || count >= 3) return null;
   const { action, id } = el.dataset;
@@ -21,31 +22,31 @@ const searchElementPath = (el, count = 0) => {
 // of click event listeners (3 per card)
 class ArtistCardContainer extends Component {
   state = { showModal: false, selectedArtist: null };
-  toggleModal = bool => this.setState({ showModal: bool });
+  shouldShowModal = bool => this.setState({ showModal: bool });
   componentDidMount() {
     window.addEventListener("click", async e => {
       const data = searchElementPath(e.target);
       if (data) {
-        const existingSuccess = document.querySelector(`.${cardStyle.success}`);
-        if (existingSuccess) {
-          existingSuccess.classList.remove(cardStyle.success);
-        }
         if (data.action === PLAY) {
-          data.el.classList.add(cardStyle.loading);
-          await playTracks(data.id, data.uri);
-          data.el.classList.remove(cardStyle.loading);
-          data.el.classList.add(cardStyle.success);
+          return await animateAndCall(
+            data.el,
+            playTracks.bind(null, data.id, data.uri),
+            cardStyle.loading,
+            cardStyle.success
+          );
         }
         if (data.action === QUEUE) {
-          data.el.classList.add(cardStyle.loading);
-          await queueTracks(data.id);
-          data.el.classList.remove(cardStyle.loading);
-          data.el.classList.add(cardStyle.success);
+          return await animateAndCall(
+            data.el,
+            queueTracks.bind(null, data.id),
+            cardStyle.loading,
+            cardStyle.success
+          );
         }
         if (data.action === VIEW) {
           const result = await getLikedTracks(data.id);
           this.setState({ selectedArtist: result });
-          this.toggleModal(true);
+          this.shouldShowModal(true);
         }
       }
     });
@@ -60,7 +61,7 @@ class ArtistCardContainer extends Component {
           <TrackList
             show={this.state.showModal}
             artist={this.state.selectedArtist}
-            toggleModal={this.toggleModal}
+            shouldShowModal={this.shouldShowModal}
           />
         )}
       </>
