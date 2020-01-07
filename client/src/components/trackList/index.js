@@ -14,7 +14,7 @@ const TrackList = ({ artist, show, shouldShowModal }) => {
       style.loading,
       style.success
     );
-    setTimeout(() => shouldShowModal(false), 400);
+    setTimeout(() => shouldShowModal(false), 500);
   };
   return (
     <>

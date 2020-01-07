@@ -59,12 +59,25 @@ svg.loading {
 }
 .success svg,
 svg.success {
-  opacity: 1;
-  color: var(--spotifyGreen);
+  animation: fade-later 3s;
 }
 
 .play {
   border-radius: 50%;
+}
+
+@keyframes fade-later {
+  0% {
+    color: var(--spotifyGreen);
+    opacity: 1;
+  }
+  80% {
+    color: var(--spotifyGreen);
+    opacity: 1;
+  }
+  100% {
+    color: inherit;
+  }
 }
 
 @keyframes shadow-pulse {
