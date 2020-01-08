@@ -13,7 +13,7 @@ const ArtistCard = ({ artist }) => (
       data-action={PLAY}
       data-id={artist.artistId}
     >
-      <img src={artist.image} className="mw-100" />
+      <img src={artist.image} className="mw-100 mh-100" />
       <MdPlayCircleFilled
         size="3em"
         className={`${style.cardSvg} ${style.play}`}
