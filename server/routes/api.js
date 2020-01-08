@@ -6,7 +6,9 @@ const User = mongoose.model("users");
 const {
   createPlaylist,
   addTracksToPlaylist,
-  getChunkedUris
+  getChunkedUris,
+  getUserDevices,
+  transferPlayback
 } = require("../utils/apiHelpers");
 require("../middleware/axios");
 
@@ -56,7 +58,7 @@ module.exports = app => {
     restUris.forEach(async uris => await addTracksToPlaylist(uris, req.user));
     setTimeout(async () => {
       // Start playback
-      await axios.put(
+      const playbackRes = await axios.put(
         "https://api.spotify.com/v1/me/player/play",
         playbackOptions,
         {
@@ -67,8 +69,17 @@ module.exports = app => {
           }
         }
       );
-      res.sendStatus(200);
-    }, 750);
+      if (playbackRes.response) {
+        const errorData = playbackRes.response.data.error;
+        if (
+          errorData.status === 404 &&
+          errorData.reason === "NO_ACTIVE_DEVICE"
+        ) {
+          // TODO: Present user with a list of their available devices
+        }
+      }
+      res.sendStatus(playbackRes.status);
+    }, 750); // Need to wait after replacing playlist
   });
 
   // Create the playlist we will use
@@ -95,7 +106,10 @@ module.exports = app => {
     UserArtist.find(
       { userId: req.user.id },
       "artistId name image",
-      { sort: { name: 1 } },
+      {
+        sort: { name: 1 },
+        collation: { locale: "en_US" }
+      },
       (err, artists) => {
         res.send(artists);
       }
