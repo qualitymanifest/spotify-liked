@@ -2,7 +2,7 @@ import { h } from "preact";
 import { useContext, useEffect, useState } from "preact/hooks";
 import { Link } from "wouter-preact";
 
-import UserContext from "../../UserContext";
+import UserContext from "../../utils/UserContext";
 import { getLikedTracks } from "../../utils/requests";
 import ArtistCardContainer from "../../components/artistCardContainer";
 

@@ -4,8 +4,9 @@ import { Switch, Route } from "wouter-preact";
 
 import Header from "./header";
 import Home from "../routes/home";
-import Profile from "../routes/profile";
-import UserContext from "../UserContext";
+import About from "../routes/about";
+import Settings from "../routes/settings";
+import UserContext from "../utils/UserContext";
 import { fetchUser } from "../utils/requests";
 
 const App = () => {
@@ -22,11 +23,11 @@ const App = () => {
           <Route path="/">
             <Home />
           </Route>
-          <Route path="/profile/">
-            <Profile path="/profile/" user="me" />
+          <Route path="/about">
+            <About />
           </Route>
-          <Route path="/profile/:user">
-            <Profile path="/profile/:user" />
+          <Route path="/settings">
+            <Settings />
           </Route>
         </Switch>
       </UserContext.Provider>
