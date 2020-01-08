@@ -3,7 +3,6 @@ import { useState, useEffect } from "preact/hooks";
 import { Switch, Route } from "wouter-preact";
 
 import Header from "./header";
-
 import Home from "../routes/home";
 import Profile from "../routes/profile";
 import UserContext from "../UserContext";

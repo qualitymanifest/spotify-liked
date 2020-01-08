@@ -3,10 +3,10 @@
 }
 
 .card {
-  border: 1px solid lightgray;
-  border-radius: 10px;
+  border-radius: 5px;
   width: 10vw;
   min-width: 145px;
+  background-color: #cdf564;
 }
 
 .cardArtist {
