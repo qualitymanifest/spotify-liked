@@ -78,7 +78,7 @@ module.exports = app => {
           // TODO: Present user with a list of their available devices
         }
       }
-      res.sendStatus(playbackRes.status);
+      res.sendStatus(playbackRes.status || playbackRes.response.status);
     }, 750); // Need to wait after replacing playlist
   });
 
