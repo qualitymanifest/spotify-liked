@@ -6,11 +6,13 @@ const User = mongoose.model("users");
 const {
   getLikedTracks,
   createPlaylist,
+  replacePlaylistTracks,
   addTracksToPlaylist,
+  startPlayback,
   getChunkedUris,
   getUserDevices,
   transferPlayback
-} = require("../utils/apiHelpers");
+} = require("../utils/requests");
 const processLikedTracks = require("../utils/processLikedTracks");
 require("../middleware/axios");
 
@@ -51,35 +53,24 @@ module.exports = app => {
     if (req.query.offset) {
       playbackOptions.offset = { uri: req.query.offset };
     }
-    const result = await getTracksForArtist(req.user.id, req.params.artistId);
-    const [firstUris, ...restUris] = getChunkedUris(result.tracks, 100); // Max to add at once
-    await axios.put(
-      `https://api.spotify.com/v1/playlists/${req.user.playlistId}/tracks`,
-      { uris: firstUris },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${req.user.accessToken}`,
-          userId: req.user.id
-        }
-      }
-    );
-    // If there were more than 100 uris, add the rest
-    restUris.forEach(async uris => await addTracksToPlaylist(uris, req.user));
+    try {
+      const result = await getTracksForArtist(req.user.id, req.params.artistId);
+      const [firstUris, ...restUris] = getChunkedUris(result.tracks, 100); // Max to add at once
+      await replacePlaylistTracks(req, firstUris);
+      // If there were more than 100 uris, add the rest
+      restUris.forEach(async uris => await addTracksToPlaylist(uris, req.user));
+    } catch (e) {
+      logReqErrorMessage(req, e);
+      res.sendStatus(500);
+    }
     setTimeout(async () => {
-      // Start playback
-      const playbackRes = await axios.put(
-        "https://api.spotify.com/v1/me/player/play",
-        playbackOptions,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${req.user.accessToken}`,
-            userId: req.user.id
-          }
-        }
-      );
-      res.sendStatus(playbackRes.status || playbackRes.response.status);
+      try {
+        const playbackRes = await startPlayback(req, playbackOptions);
+        res.sendStatus(200);
+      } catch (e) {
+        logReqErrorMessage(req, e);
+        // Handle possible 404 NO_ACTIVE_DEVICE
+      }
     }, 750); // Need to wait after replacing playlist
   });
 
@@ -97,7 +88,7 @@ module.exports = app => {
       res.sendStatus(201);
     } catch (e) {
       logReqErrorMessage(req, e);
-      res.status(500).send("Failed to create playlist");
+      res.sendStatus(500);
     }
   });
 
@@ -108,7 +99,7 @@ module.exports = app => {
       res.send(result);
     } catch (e) {
       logReqErrorMessage(req, e);
-      res.status(500).send("Failed to get liked tracks");
+      res.sendStatus(500);
     }
   });
 
@@ -124,7 +115,7 @@ module.exports = app => {
       (e, artists) => {
         if (e) {
           logReqErrorMessage(req, e);
-          res.status(500).send("Failed to get liked artists");
+          res.sendStatus(500);
         }
         res.status(200).send(artists);
       }

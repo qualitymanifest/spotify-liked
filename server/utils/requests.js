@@ -65,6 +65,34 @@ const createPlaylist = async (userId, spotifyId, accessToken) => {
   );
 };
 
+const replacePlaylistTracks = async (req, uris) => {
+  return await axios.put(
+    `https://api.spotify.com/v1/playlists/${req.user.playlistId}/tracks`,
+    { uris },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${req.user.accessToken}`,
+        userId: req.user.id
+      }
+    }
+  );
+};
+
+const startPlayback = async (req, playbackOptions) => {
+  return await axios.put(
+    "https://api.spotify.com/v1/me/player/play",
+    playbackOptions,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${req.user.accessToken}`,
+        userId: req.user.id
+      }
+    }
+  );
+};
+
 const addTracksToPlaylist = async (trackUris, user) => {
   return await axios.post(
     `https://api.spotify.com/v1/playlists/${user.playlistId}/tracks`,
@@ -89,6 +117,8 @@ module.exports = {
   getUserDevices,
   transferPlayback,
   createPlaylist,
+  replacePlaylistTracks,
+  startPlayback,
   addTracksToPlaylist,
   getChunkedUris
 };
