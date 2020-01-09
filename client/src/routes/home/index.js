@@ -1,13 +1,11 @@
 import { h } from "preact";
-import { useContext, useEffect, useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { Link } from "wouter-preact";
 
-import UserContext from "../../utils/UserContext";
 import { getLikedTracks } from "../../utils/requests";
 import ArtistCardContainer from "../../components/artistCardContainer";
 
-const Home = () => {
-  const user = useContext(UserContext);
+const Home = ({ user }) => {
   const [artists, setArtists] = useState(null);
   useEffect(async () => {
     if (user) {

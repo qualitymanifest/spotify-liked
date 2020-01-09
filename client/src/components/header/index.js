@@ -1,8 +1,6 @@
 import { h } from "preact";
-import { useContext } from "preact/hooks";
 import { Link } from "wouter-preact";
 import { Navbar, Nav } from "react-bootstrap";
-import UserContext from "../../utils/UserContext";
 
 const loginButton = user => {
   switch (user) {
@@ -23,8 +21,7 @@ const loginButton = user => {
   }
 };
 
-const Header = () => {
-  const user = useContext(UserContext);
+const Header = ({ user }) => {
   return (
     <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark" fixed="top">
       <Navbar.Brand as={Link} href="/">

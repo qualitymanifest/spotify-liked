@@ -6,7 +6,6 @@ import Header from "./header";
 import Home from "../routes/home";
 import About from "../routes/about";
 import Settings from "../routes/settings";
-import UserContext from "../utils/UserContext";
 import { fetchUser } from "../utils/requests";
 
 const App = () => {
@@ -17,20 +16,18 @@ const App = () => {
   }, []);
   return (
     <div id="app">
-      <UserContext.Provider value={user}>
-        <Header />
-        <Switch>
-          <Route path="/">
-            <Home />
-          </Route>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/settings">
-            <Settings />
-          </Route>
-        </Switch>
-      </UserContext.Provider>
+      <Header user={user} />
+      <Switch>
+        <Route path="/">
+          <Home user={user} />
+        </Route>
+        <Route path="/about">
+          <About />
+        </Route>
+        <Route path="/settings">
+          <Settings user={user} />
+        </Route>
+      </Switch>
     </div>
   );
 };

@@ -1,15 +1,13 @@
 import { h } from "preact";
-import { useContext } from "preact/hooks";
 
-import UserContext from "../../utils/UserContext";
 import FetchTracksSetting from "../../components/fetchTracksSetting";
 
-const Settings = () => {
-  const user = useContext(UserContext);
+const Settings = ({ user }) => {
   if (!user) return null;
   return (
     <main className="text-center mt-4">
       <h3>User: {user.displayName}</h3>
+      <br />
       <FetchTracksSetting user={user} />
     </main>
   );
