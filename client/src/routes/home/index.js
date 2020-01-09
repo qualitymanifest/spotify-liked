@@ -16,7 +16,7 @@ const Home = () => {
     }
   }, [user]);
   return (
-    <div class="d-flex flex-wrap justify-content-center">
+    <main class="d-flex flex-wrap justify-content-center">
       {!user && (
         <p className="mt-4">
           <a href="/auth/spotify">Log in or sign up</a> to view your liked
@@ -30,7 +30,7 @@ const Home = () => {
         </p>
       )}
       <ArtistCardContainer artists={artists || []} />
-    </div>
+    </main>
   );
 };
 

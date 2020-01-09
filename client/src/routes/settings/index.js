@@ -8,10 +8,10 @@ const Settings = () => {
   const user = useContext(UserContext);
   if (!user) return null;
   return (
-    <div className="text-center mt-4">
+    <main className="text-center mt-4">
       <p>User: {user.displayName}</p>
       <FetchTracksSetting user={user} />
-    </div>
+    </main>
   );
 };
 
