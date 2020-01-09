@@ -24,15 +24,23 @@ const getTracksForArtist = async (userId, artistId) => {
   ).exec();
 };
 
+const logReqErrorMessage = (req, e) =>
+  console.log(`${req.method} ${req.url} failed for user ${req.user.id}`, e);
+
 module.exports = app => {
   // Add tracks to the end of the playlist, without changing playback
   app.put("/api/queue_tracks/:artistId", async (req, res) => {
-    const result = await getTracksForArtist(req.user.id, req.params.artistId);
-    const chunkedUris = getChunkedUris(result.tracks, 100); // Max to add at once
-    chunkedUris.forEach(
-      async uris => await addTracksToPlaylist(uris, req.user)
-    );
-    res.sendStatus(200);
+    try {
+      const result = await getTracksForArtist(req.user.id, req.params.artistId);
+      const chunkedUris = getChunkedUris(result.tracks, 100); // Max to add at once
+      chunkedUris.forEach(
+        async uris => await addTracksToPlaylist(uris, req.user)
+      );
+      res.sendStatus(200);
+    } catch (e) {
+      logReqErrorMessage(req, e);
+      res.sendStatus(500);
+    }
   });
 
   // Add tracks to the playlist and play them, with an optional offset
@@ -71,40 +79,41 @@ module.exports = app => {
           }
         }
       );
-      if (playbackRes.response) {
-        const errorData = playbackRes.response.data.error;
-        if (
-          errorData.status === 404 &&
-          errorData.reason === "NO_ACTIVE_DEVICE"
-        ) {
-          // TODO: Present user with a list of their available devices
-        }
-      }
       res.sendStatus(playbackRes.status || playbackRes.response.status);
     }, 750); // Need to wait after replacing playlist
   });
 
   // Create the playlist we will use
   app.post("/api/playlist", async (req, res) => {
-    const spotifyRes = await createPlaylist(
-      req.user.id,
-      req.user.spotifyId,
-      req.user.accessToken
-    );
-    await User.findByIdAndUpdate(req.user.id, {
-      playlistId: spotifyRes.data.id
-    });
-    res.sendStatus(201);
+    try {
+      const spotifyRes = await createPlaylist(
+        req.user.id,
+        req.user.spotifyId,
+        req.user.accessToken
+      );
+      await User.findByIdAndUpdate(req.user.id, {
+        playlistId: spotifyRes.data.id
+      });
+      res.sendStatus(201);
+    } catch (e) {
+      logReqErrorMessage(req, e);
+      res.status(500).send("Failed to create playlist");
+    }
   });
 
   // Get tracks for a particular artist
   app.get("/api/liked_tracks/:artistId", async (req, res) => {
-    const result = await getTracksForArtist(req.user.id, req.params.artistId);
-    res.send(result);
+    try {
+      const result = await getTracksForArtist(req.user.id, req.params.artistId);
+      res.send(result);
+    } catch (e) {
+      logReqErrorMessage(req, e);
+      res.status(500).send("Failed to get liked tracks");
+    }
   });
 
   // Get an alphabetically sorted list of artists, without tracks
-  app.get("/api/liked_tracks", async (req, res) => {
+  app.get("/api/liked_tracks", (req, res) => {
     UserArtist.find(
       { userId: req.user.id },
       "artistId name image",
@@ -112,8 +121,12 @@ module.exports = app => {
         sort: { name: 1 },
         collation: { locale: "en_US" }
       },
-      (err, artists) => {
-        res.send(artists);
+      (e, artists) => {
+        if (e) {
+          logReqErrorMessage(req, e);
+          res.status(500).send("Failed to get liked artists");
+        }
+        res.status(200).send(artists);
       }
     );
   });
@@ -124,15 +137,9 @@ module.exports = app => {
       Authorization: `Bearer ${req.user.accessToken}`,
       userId: req.user.id
     };
-    let likedTracks;
     try {
-      likedTracks = await getLikedTracks(header);
-    } catch (e) {
-      console.log(`Failed to get tracks from Spotify for ${req.user.id}`, e);
-      return res.status(500).send("Failed to get tracks from Spotify");
-    }
-    const processedTracks = processLikedTracks(likedTracks, req.user.id);
-    try {
+      const likedTracks = await getLikedTracks(headers);
+      const processedTracks = processLikedTracks(likedTracks, req.user.id);
       const dbSession = await mongoose.startSession();
       await dbSession.withTransaction(async () => {
         await UserArtist.deleteMany(
@@ -150,8 +157,8 @@ module.exports = app => {
         res.sendStatus(200);
       });
     } catch (e) {
-      console.log(`Failed to save tracks for ${req.user.id}`, e);
-      return res.status(500).send("Failed to save tracks");
+      logReqErrorMessage(req, e);
+      return res.sendStatus(500);
     }
   });
 };
