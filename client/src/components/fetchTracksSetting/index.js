@@ -27,7 +27,7 @@ const FetchTracksSetting = ({ user }) => {
     <>
       {!message && (
         <Button className={style.fadeIn} onClick={handleClick}>
-          Fetch tracks from spotify
+          Upload tracks from spotify
         </Button>
       )}
       {message && <p className={style.fadeIn}>{message}</p>}
