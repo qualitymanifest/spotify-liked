@@ -37,6 +37,6 @@ axios.interceptors.response.use(
       config.headers.Authorization = `Bearer ${refreshTokenReq.data.access_token}`;
       return axios(config);
     }
-    return error;
+    return Promise.reject(error);
   }
 );
