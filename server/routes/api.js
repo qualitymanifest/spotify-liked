@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const dayjs = require("dayjs");
 const utc = require("dayjs/plugin/utc");
+const colors = require("colors");
 
 const UserArtist = mongoose.model("userArtist");
 const User = mongoose.model("users");
@@ -29,7 +30,12 @@ const getTracksForArtist = async (userId, artistId) => {
 };
 
 const logReqErrorMessage = (req, e) =>
-  console.log(`${req.method} ${req.url} failed for user ${req.user.id}`, e);
+  console.log(
+    `${req.method} ${req.url} failed for user ${req.user.id}`.red.bold,
+    e.response.config.data,
+    e.response.config.headers,
+    e.response.data.error
+  );
 
 module.exports = app => {
   // Add tracks to the end of the playlist, without changing playback
@@ -63,7 +69,7 @@ module.exports = app => {
       restUris.forEach(async uris => await addTracksToPlaylist(uris, req.user));
     } catch (e) {
       logReqErrorMessage(req, e);
-      res.sendStatus(500);
+      res.status(500).send({ message: "Failed to fetch or replace tracks" });
     }
     setTimeout(async () => {
       try {
@@ -71,7 +77,17 @@ module.exports = app => {
         res.sendStatus(200);
       } catch (e) {
         logReqErrorMessage(req, e);
-        // Handle possible 404 NO_ACTIVE_DEVICE
+        const { status, reason } = e.response.data.error;
+        if (status === 404 && reason === "NO_ACTIVE_DEVICE") {
+          // If the user devices endpoint was reliable we could attempt to recover, but it's not
+          // https://github.com/spotify/web-api/issues/1423
+          // const userDevices = await getUserDevices(req.user);
+          return res.status(404).send({
+            message:
+              "No devices found. Try clicking the play button on Spotify to activate it"
+          });
+        }
+        return res.status(500).send({ message: "Something went wrong..." });
       }
     }, 750); // Need to wait after replacing playlist
   });

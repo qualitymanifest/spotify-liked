@@ -31,8 +31,10 @@ const getLikedTracks = async (
 
 const getUserDevices = async user => {
   return await axios.get("https://api.spotify.com/v1/me/player", {
-    Authorization: `Bearer ${user.accessToken}`,
-    userId: user.id
+    headers: {
+      Authorization: `Bearer ${user.accessToken}`,
+      userId: user.id
+    }
   });
 };
 

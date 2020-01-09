@@ -9,7 +9,7 @@ const Settings = () => {
   if (!user) return null;
   return (
     <main className="text-center mt-4">
-      <p>User: {user.displayName}</p>
+      <h3>User: {user.displayName}</h3>
       <FetchTracksSetting user={user} />
     </main>
   );

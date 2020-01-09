@@ -10,9 +10,9 @@ axios.interceptors.response.use(
     return response;
   },
   async error => {
-    console.log(error.response.status);
     const { config } = error; // The request that led here
     if (error.response.status === 401) {
+      console.log(`401 ${config.headers.userId}`);
       const user = await User.findById(config.headers.userId);
       // Get the new token
       const refreshTokenReq = await axios({
