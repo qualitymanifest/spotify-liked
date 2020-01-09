@@ -2,6 +2,33 @@ const axios = require("axios");
 
 const chunk = require("./chunk");
 
+const getLikedTracks = async (
+  headers,
+  accum = [],
+  url = "https://api.spotify.com/v1/me/tracks"
+) => {
+  const spotifyRes = await axios.get(url, {
+    headers,
+    params: {
+      limit: 50 // max
+    }
+  });
+  if (spotifyRes.status === 200) {
+    accum.push(...spotifyRes.data.items);
+    // Get the next 50 liked songs, or return if there are no more
+    // It's possible that req.user.accessToken was expired and fixed by interceptor
+    // Use the headers (and access token) that we know got a 200
+    if (spotifyRes.data.next) {
+      return await getLikedTracks(
+        spotifyRes.config.headers,
+        accum,
+        spotifyRes.data.next
+      );
+    }
+    return accum;
+  }
+};
+
 const getUserDevices = async user => {
   return await axios.get("https://api.spotify.com/v1/me/player", {
     Authorization: `Bearer ${user.accessToken}`,
@@ -58,6 +85,9 @@ const getChunkedUris = (tracks, size) => {
 };
 
 module.exports = {
+  getLikedTracks,
+  getUserDevices,
+  transferPlayback,
   createPlaylist,
   addTracksToPlaylist,
   getChunkedUris
