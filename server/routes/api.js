@@ -124,14 +124,34 @@ module.exports = app => {
       Authorization: `Bearer ${req.user.accessToken}`,
       userId: req.user.id
     };
-    const likedTracks = await getLikedTracks(headers);
+    let likedTracks;
+    try {
+      likedTracks = await getLikedTracks(header);
+    } catch (e) {
+      console.log(`Failed to get tracks from Spotify for ${req.user.id}`, e);
+      return res.status(500).send("Failed to get tracks from Spotify");
+    }
     const processedTracks = processLikedTracks(likedTracks, req.user.id);
-    // Maybe use a transaction? https://mongoosejs.com/docs/transactions.html
-    await UserArtist.deleteMany({ userId: req.user.id });
-    await UserArtist.insertMany(processedTracks);
-    await User.findByIdAndUpdate(req.user.id, {
-      lastUpdate: new Date()
-    });
-    res.sendStatus(200);
+    try {
+      const dbSession = await mongoose.startSession();
+      await dbSession.withTransaction(async () => {
+        await UserArtist.deleteMany(
+          { userId: req.user.id },
+          { session: dbSession }
+        );
+        await UserArtist.insertMany(processedTracks, { session: dbSession });
+        await User.findByIdAndUpdate(
+          req.user.id,
+          {
+            lastUpdate: new Date()
+          },
+          { session: dbSession }
+        );
+        res.sendStatus(200);
+      });
+    } catch (e) {
+      console.log(`Failed to save tracks for ${req.user.id}`, e);
+      return res.status(500).send("Failed to save tracks");
+    }
   });
 };
