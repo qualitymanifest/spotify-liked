@@ -17,6 +17,10 @@ module.exports = app => {
   });
 
   app.get("/auth/current_user", (req, res) => {
-    res.send({ displayName: req.user ? req.user.displayName : "" });
+    if (!req.user) return res.send({});
+    res.send({
+      displayName: req.user.displayName,
+      lastUpdate: req.user.lastUpdate
+    });
   });
 };

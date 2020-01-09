@@ -13,7 +13,7 @@ const App = () => {
   const [user, setUser] = useState(null);
   useEffect(async () => {
     const user = await fetchUser();
-    setUser(user.displayName || false);
+    setUser(user.displayName ? user : false);
   }, []);
   return (
     <div id="app">

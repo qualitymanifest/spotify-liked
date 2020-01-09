@@ -20,10 +20,9 @@ export const getLikedTracks = async (artistId = "") => {
 };
 
 export const updateLikedTracks = async () => {
-  const res = fetch("/api/liked_tracks", { method: "PUT" });
-  return await res.json();
+  return await fetch("/api/liked_tracks", { method: "PUT" });
 };
 
-export const createPlaylist = () => {
-  fetch("/api/playlist", { method: "POST" });
+export const createPlaylist = async () => {
+  return await fetch("/api/playlist", { method: "POST" });
 };
