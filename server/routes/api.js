@@ -1,5 +1,6 @@
-const axios = require("axios");
 const mongoose = require("mongoose");
+const dayjs = require("dayjs");
+const utc = require("dayjs/plugin/utc");
 
 const UserArtist = mongoose.model("userArtist");
 const User = mongoose.model("users");
@@ -15,6 +16,7 @@ const {
 } = require("../utils/requests");
 const processLikedTracks = require("../utils/processLikedTracks");
 require("../middleware/axios");
+dayjs.extend(utc);
 
 const getTracksForArtist = async (userId, artistId) => {
   return await UserArtist.findOne(
@@ -124,7 +126,15 @@ module.exports = app => {
 
   // Create or replace the user's liked songs on the DB
   app.put("/api/liked_tracks", async (req, res) => {
-    let headers = {
+    const now = dayjs().utc();
+    const lastUpdate = dayjs(req.user.lastUpdate).utc();
+    const minSinceLastUpdate = now.diff(lastUpdate, "minute");
+    if (minSinceLastUpdate < 60) {
+      const message = `Too many requests... Check back in ${60 -
+        minSinceLastUpdate} minutes to update tracks`;
+      return res.status(429).send({ message });
+    }
+    const headers = {
       Authorization: `Bearer ${req.user.accessToken}`,
       userId: req.user.id
     };
