@@ -5,7 +5,7 @@ import { Link } from "wouter-preact";
 import { getLikedTracks } from "../../utils/requests";
 import ArtistCardContainer from "../../components/artistCardContainer";
 
-const Home = ({ user }) => {
+const Home = ({ user, addToast }) => {
   const [artists, setArtists] = useState(null);
   useEffect(async () => {
     if (user) {
@@ -27,7 +27,7 @@ const Home = ({ user }) => {
           tracks
         </p>
       )}
-      <ArtistCardContainer artists={artists || []} />
+      <ArtistCardContainer artists={artists || []} addToast={addToast} />
     </main>
   );
 };

@@ -5,7 +5,7 @@ export const fetchUser = async () => {
 
 export const playTracks = async (artistId, trackUri) => {
   const offset = trackUri ? `?offset=${trackUri}` : "";
-  await fetch(`/api/play_tracks/${artistId}${offset}`, {
+  return await fetch(`/api/play_tracks/${artistId}${offset}`, {
     method: "PUT"
   });
 };

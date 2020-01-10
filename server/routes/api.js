@@ -15,6 +15,7 @@ const {
   getUserDevices,
   transferPlayback
 } = require("../utils/requests");
+const { MSG_NO_PLAYER } = require("../utils/constants");
 const processLikedTracks = require("../utils/processLikedTracks");
 require("../middleware/axios");
 dayjs.extend(utc);
@@ -82,10 +83,7 @@ module.exports = app => {
           // If the user devices endpoint was reliable we could attempt to recover, but it's not
           // https://github.com/spotify/web-api/issues/1423
           // const userDevices = await getUserDevices(req.user);
-          return res.status(404).send({
-            message:
-              "No devices found. Try clicking the play button on Spotify to activate it"
-          });
+          return res.status(404).send({ message: MSG_NO_PLAYER });
         }
         return res.status(500).send({ message: "Something went wrong..." });
       }

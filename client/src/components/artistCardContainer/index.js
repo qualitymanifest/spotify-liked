@@ -21,18 +21,21 @@ const searchElementPath = (el, count = 0) => {
 
 // The purpose of this component is to eliminate potentially thousands
 // of click event listeners (3 per card * lots of cards)
-const ArtistCardContainer = ({ artists }) => {
+const ArtistCardContainer = ({ artists, addToast }) => {
   const [selectedArtist, setSelectedArtist] = useState(null);
   const handleClick = async e => {
     const data = searchElementPath(e.target);
     if (!data) return;
     if (data.action === PLAY) {
-      return await animateAndCall(
+      const res = await animateAndCall(
         data.el,
         playTracks.bind(null, data.id, data.uri),
         cardStyle.loading,
         cardStyle.success
       );
+      if (res.status === 200) return;
+      const json = await res.json();
+      return addToast({ header: "error", body: json.message, delay: 5000 });
     }
     if (data.action === QUEUE) {
       return await animateAndCall(

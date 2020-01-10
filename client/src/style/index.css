@@ -19,7 +19,7 @@ body {
   min-height: 100%;
   padding-top: 70px;
   padding-bottom: 2%;
-  background: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
+  background-color: #96e6a1;
 }
 
 @media only screen and (min-width: 900px) {

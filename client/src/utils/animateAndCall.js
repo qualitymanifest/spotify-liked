@@ -9,9 +9,12 @@ const animateAndCall = async (el, func, loadingClass, doneClass) => {
   // clicking on the same thing the loadingClass can't take effect
   removeExistingClassInstances(doneClass);
   el.classList.add(loadingClass);
-  await func(); // variables are bound
+  const res = await func(); // variables are bound
   removeExistingClassInstances(loadingClass);
-  el.classList.add(doneClass);
+  if (res.status === 200) {
+    el.classList.add(doneClass);
+  }
+  return res;
 };
 
 export default animateAndCall;

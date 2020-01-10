@@ -1,0 +1,6 @@
+.toastContainer {
+  z-index: 9999; /* Often error messages, so they have to be seen */
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
