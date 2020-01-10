@@ -5,7 +5,7 @@ import style from "./style";
 import { playTracks } from "../../utils/requests";
 import animateAndCall from "../../utils/animateAndCall";
 
-const TrackList = ({ artist, show, shouldShowModal }) => {
+const TrackList = ({ artist, setSelectedArtist }) => {
   const selectTrack = async (artistId, trackUri, className) => {
     const el = document.querySelector(`.${className}`);
     await animateAndCall(
@@ -14,15 +14,15 @@ const TrackList = ({ artist, show, shouldShowModal }) => {
       style.loading,
       style.success
     );
-    setTimeout(() => shouldShowModal(false), 500);
+    setTimeout(() => setSelectedArtist(null), 500);
   };
   return (
     <>
       <Modal
         centered
         scrollable
-        show={show}
-        onHide={() => shouldShowModal(false)}
+        show={Boolean(artist)}
+        onHide={() => setSelectedArtist(null)}
       >
         <Modal.Header closeButton>
           <Modal.Title>{artist.name}</Modal.Title>
