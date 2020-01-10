@@ -4,7 +4,6 @@ import style from "./style";
 import ToastHelper from "../toastHelper";
 
 const ToastContainer = ({ toasts, deleteToast }) => {
-  console.log("toasts in toastContainer", Object.entries(toasts));
   return (
     <div className={style.toastContainer}>
       {Object.entries(toasts).map(([key, toastData]) => (

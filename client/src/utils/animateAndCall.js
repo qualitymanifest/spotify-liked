@@ -11,7 +11,7 @@ const animateAndCall = async (el, func, loadingClass, doneClass) => {
   el.classList.add(loadingClass);
   const res = await func(); // variables are bound
   removeExistingClassInstances(loadingClass);
-  if (res.status === 200) {
+  if (res.status < 400) {
     el.classList.add(doneClass);
   }
   return res;

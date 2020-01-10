@@ -65,6 +65,7 @@ const ArtistCardContainer = ({ artists, addToast }) => {
         <TrackList
           artist={selectedArtist}
           setSelectedArtist={setSelectedArtist}
+          addToast={addToast}
         />
       )}
     </>

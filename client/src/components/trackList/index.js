@@ -5,16 +5,20 @@ import style from "./style";
 import { playTracks } from "../../utils/requests";
 import animateAndCall from "../../utils/animateAndCall";
 
-const TrackList = ({ artist, setSelectedArtist }) => {
+const TrackList = ({ artist, setSelectedArtist, addToast }) => {
   const selectTrack = async (artistId, trackUri, className) => {
     const el = document.querySelector(`.${className}`);
-    await animateAndCall(
+    const res = await animateAndCall(
       el,
       playTracks.bind(null, artistId, trackUri),
       style.loading,
       style.success
     );
-    setTimeout(() => setSelectedArtist(null), 500);
+    if (res.status === 200) {
+      return setTimeout(() => setSelectedArtist(null), 500);
+    }
+    const json = await res.json();
+    return addToast({ header: "error", body: json.message, delay: 5000 });
   };
   return (
     <>
