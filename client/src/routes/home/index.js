@@ -14,7 +14,7 @@ const Home = ({ user, addToast }) => {
     }
   }, [user]);
   return (
-    <main class="d-flex flex-wrap justify-content-center">
+    <main class="d-flex flex-wrap justify-content-center" onclick={() => null}>
       {!user && (
         <p className="mt-4">
           <a href="/auth/spotify">Log in or sign up</a> to view your liked
