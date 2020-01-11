@@ -39,12 +39,14 @@ require("./routes/auth")(app);
 require("./routes/api")(app);
 
 if (process.env.NODE_ENV === "production") {
+  const { join } = require("path");
+  const buildDir = join(__dirname, "..", "client", "build");
+  const indexHTML = join(buildDir, "index.html");
   // Serve prod assets like main.js and main.css
-  app.use(express.static("../client/build"));
+  app.use(express.static(buildDir));
   // Serve index.html if route is not recognized
-  const path = require("path");
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+    res.sendFile(indexHTML);
   });
 }
 
