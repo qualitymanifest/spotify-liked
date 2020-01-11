@@ -14,11 +14,13 @@ const ArtistCard = ({ artist }) => (
       data-id={artist.artistId}
     >
       <img src={artist.image} className="mw-100 mh-100" />
-      <MdPlayCircleFilled
-        pointer-events="none"
-        size="3em"
-        className={`${style.cardSvg} ${style.play}`}
-      />
+      <span className={style.playSpan}>
+        <MdPlayCircleFilled
+          pointer-events="none"
+          size="3em"
+          className={style.cardSvg}
+        />
+      </span>
     </div>
     <div className="d-flex justify-content-around">
       <MdQueue

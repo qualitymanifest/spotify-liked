@@ -21,14 +21,17 @@
   cursor: pointer;
 }
 
-.cardArtist svg {
+.playSpan {
+  transition: all 150ms ease-in-out;
+  pointer-events: none;
+  border-radius: 50%;
   position: absolute;
   top: calc(50% - 24px);
   left: calc(50% - 24px);
   opacity: 0.3;
 }
 
-.cardArtist:hover svg {
+.cardArtist:hover .playSpan {
   transform: scale(1.1);
   background-color: rgb(0, 0, 0, 0.8);
   opacity: 1;
@@ -59,18 +62,14 @@
 
 /* play button loading class is on parent element
 queue button loading class is on the svg */
-.loading svg,
+.loading .playSpan,
 svg.loading {
   opacity: 1;
   animation: shadow-pulse 1s infinite;
 }
-.success svg,
+.success .playSpan,
 svg.success {
   animation: fade-later 4s;
-}
-
-.play {
-  border-radius: 50%;
 }
 
 @keyframes fade-later {
