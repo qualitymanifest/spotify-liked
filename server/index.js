@@ -15,7 +15,7 @@ mongoose.connect(
 const app = express();
 app.enable("trust proxy");
 app.use((req, res, next) => {
-  if (req.secure || req.hostname === "localhost") {
+  if (req.secure || process.env.NODE_ENV !== "production") {
     return next();
   }
   res.redirect(`https://${req.hostname}${req.url}`);
@@ -37,6 +37,16 @@ app.use((req, res, next) => {
 });
 require("./routes/auth")(app);
 require("./routes/api")(app);
+
+if (process.env.NODE_ENV === "production") {
+  // Serve prod assets like main.js and main.css
+  app.use(express.static("../client/build"));
+  // Serve index.html if route is not recognized
+  const path = require("path");
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
