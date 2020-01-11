@@ -18,6 +18,7 @@
   position: relative;
   height: 10vw; /* Match card width */
   min-height: 152px; /* Match card width */
+  cursor: pointer;
 }
 
 .cardArtist svg {
@@ -43,8 +44,8 @@
 }
 
 .cardSvg {
-  transition: all 150ms ease-in-out;
   cursor: pointer;
+  transition: all 150ms ease-in-out;
 }
 
 .cardSvg:hover {
@@ -52,7 +53,8 @@
 }
 
 .card img {
-  cursor: pointer;
+  /* Pass pointer events through to the parent div */
+  pointer-events: none;
 }
 
 /* play button loading class is on parent element

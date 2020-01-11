@@ -32,3 +32,8 @@ body {
     padding-right: 5vw;
   }
 }
+
+path {
+  /* Pass pointer events through to the parent svg element */
+  pointer-events: none;
+}

@@ -15,12 +15,14 @@ const ArtistCard = ({ artist }) => (
     >
       <img src={artist.image} className="mw-100 mh-100" />
       <MdPlayCircleFilled
+        pointer-events="none"
         size="3em"
         className={`${style.cardSvg} ${style.play}`}
       />
     </div>
     <div className="d-flex justify-content-around">
       <MdQueue
+        pointer-events="bounding-box"
         title={`Queue ${artist.name}`}
         size="2em"
         className={`${style.cardSvg} my-2`}
@@ -28,6 +30,7 @@ const ArtistCard = ({ artist }) => (
         data-id={artist.artistId}
       />
       <MdQueueMusic
+        pointer-events="bounding-box"
         title={`View tracks by ${artist.name}`}
         size="2em"
         className={`${style.cardSvg} my-2`}
