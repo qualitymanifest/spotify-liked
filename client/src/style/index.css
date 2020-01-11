@@ -2,6 +2,10 @@ html,
 body {
   height: 100%;
   width: 100%;
+  /* Builds are ending up with 992px !important on body
+  I think this is coming from Bootstrap, but not sure why
+  Tried going back to bs@4.3.1, no difference */
+  min-width: 0px !important;
   padding: 0;
   background: #fafafa;
   font-family: "Helvetica Neue", arial, sans-serif;
