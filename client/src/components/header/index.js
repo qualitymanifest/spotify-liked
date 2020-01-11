@@ -32,6 +32,7 @@ const loginButton = user => {
 const Header = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
+  const close = () => setIsOpen(false);
   return (
     <Navbar expand="sm" color="dark" dark fixed="top">
       <NavbarBrand tag={Link} href="/">
@@ -40,20 +41,15 @@ const Header = ({ user }) => {
       <NavbarToggler onClick={toggle} aria-controls="responsive-navbar-nav" />
       <Collapse navbar isOpen={isOpen} id="responsive-navbar-nav">
         <Nav navbar className="ml-auto">
-          <NavLink onClick={toggle} tag={Link} href="/" className="mx-auto">
+          <NavLink onClick={close} tag={Link} href="/" className="mx-auto">
             Home
           </NavLink>
-          <NavLink
-            onClick={toggle}
-            tag={Link}
-            href="/about"
-            className="mx-auto"
-          >
+          <NavLink onClick={close} tag={Link} href="/about" className="mx-auto">
             About
           </NavLink>
           {user && (
             <NavLink
-              onClick={toggle}
+              onClick={close}
               tag={Link}
               href="/settings"
               className="mx-auto"
