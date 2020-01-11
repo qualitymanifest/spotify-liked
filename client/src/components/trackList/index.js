@@ -1,11 +1,12 @@
 import { h } from "preact";
-import { Modal } from "react-bootstrap";
+import { Modal, ModalHeader, ModalBody } from "reactstrap";
 
 import style from "./style";
 import { playTracks } from "../../utils/requests";
 import animateAndCall from "../../utils/animateAndCall";
 
 const TrackList = ({ artist, setSelectedArtist, addToast }) => {
+  const close = () => setSelectedArtist(null);
   const selectTrack = async (artistId, trackUri, className) => {
     const el = document.querySelector(`.${className}`);
     const res = await animateAndCall(
@@ -15,23 +16,16 @@ const TrackList = ({ artist, setSelectedArtist, addToast }) => {
       style.success
     );
     if (res.status === 200) {
-      return setTimeout(() => setSelectedArtist(null), 500);
+      return setTimeout(close, 600);
     }
     const json = await res.json();
     return addToast({ header: "error", body: json.message, delay: 5000 });
   };
   return (
     <>
-      <Modal
-        centered
-        scrollable
-        show={Boolean(artist)}
-        onHide={() => setSelectedArtist(null)}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>{artist.name}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal centered scrollable isOpen={Boolean(artist)} toggle={close}>
+        <ModalHeader toggle={close}>{artist.name}</ModalHeader>
+        <ModalBody>
           {artist.tracks.map((track, idx) => (
             <div
               className={`${style.track} track${idx}`}
@@ -42,7 +36,7 @@ const TrackList = ({ artist, setSelectedArtist, addToast }) => {
               <p>{track.name}</p>
             </div>
           ))}
-        </Modal.Body>
+        </ModalBody>
       </Modal>
     </>
   );

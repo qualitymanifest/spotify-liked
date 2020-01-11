@@ -1,23 +1,25 @@
 import { h } from "preact";
 import { useState } from "preact/hooks";
 import { memo } from "preact/compat";
-import { Toast } from "react-bootstrap";
+import { MdClose } from "react-icons/md";
+import { Toast, ToastBody, ToastHeader } from "reactstrap";
+
+import style from "./style";
 
 const ToastHelper = ({ toastId, data, deleteToast }) => {
   const handleClose = () => {
     deleteToast(toastId);
   };
+  if (data.delay) {
+    setTimeout(handleClose, data.delay);
+  }
   return (
-    <Toast
-      key={toastId}
-      show={true}
-      onClose={handleClose}
-      delay={data.delay}
-      autohide={Boolean(data.delay)}
-      animation={false}
-    >
-      <Toast.Header>{data.header}</Toast.Header>
-      <Toast.Body>{data.body}</Toast.Body>
+    <Toast key={toastId} isOpen={true} toggle={handleClose}>
+      <ToastHeader>
+        {data.header}
+        <MdClose className={style.closeButton} onClick={handleClose} />
+      </ToastHeader>
+      <ToastBody>{data.body}</ToastBody>
     </Toast>
   );
 };

@@ -1,6 +1,14 @@
 import { h } from "preact";
+import { useState } from "preact/hooks";
 import { Link } from "wouter-preact";
-import { Navbar, Nav } from "react-bootstrap";
+import {
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavLink
+} from "reactstrap";
 
 const loginButton = user => {
   switch (user) {
@@ -8,42 +16,54 @@ const loginButton = user => {
       return "";
     case false:
       return (
-        <Nav.Link href="/auth/spotify" className="mx-auto">
+        <NavLink href="/auth/spotify" className="mx-auto">
           Login with Spotify
-        </Nav.Link>
+        </NavLink>
       );
     default:
       return (
-        <Nav.Link href="/auth/logout" className="mx-auto">
+        <NavLink href="/auth/logout" className="mx-auto">
           Logout
-        </Nav.Link>
+        </NavLink>
       );
   }
 };
 
 const Header = ({ user }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const toggle = () => setIsOpen(!isOpen);
   return (
-    <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark" fixed="top">
-      <Navbar.Brand as={Link} href="/">
+    <Navbar expand="sm" color="dark" dark fixed="top">
+      <NavbarBrand tag={Link} href="/">
         spotify-liked
-      </Navbar.Brand>
-      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-      <Navbar.Collapse id="responsive-navbar-nav">
-        <Nav className="ml-auto">
-          <Nav.Link as={Link} href="/" className="mx-auto">
+      </NavbarBrand>
+      <NavbarToggler onClick={toggle} aria-controls="responsive-navbar-nav" />
+      <Collapse navbar isOpen={isOpen} id="responsive-navbar-nav">
+        <Nav navbar className="ml-auto">
+          <NavLink onClick={toggle} tag={Link} href="/" className="mx-auto">
             Home
-          </Nav.Link>
-          <Nav.Link as={Link} href="/about" className="mx-auto">
+          </NavLink>
+          <NavLink
+            onClick={toggle}
+            tag={Link}
+            href="/about"
+            className="mx-auto"
+          >
             About
-          </Nav.Link>
+          </NavLink>
           {user && (
-            <Nav.Link as={Link} href="/settings" className="mx-auto">
+            <NavLink
+              onClick={toggle}
+              tag={Link}
+              href="/settings"
+              className="mx-auto"
+            >
               Settings
-            </Nav.Link>
+            </NavLink>
           )}
           {loginButton(user)}
         </Nav>
-      </Navbar.Collapse>
+      </Collapse>
     </Navbar>
   );
 };

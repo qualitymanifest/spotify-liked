@@ -1,13 +1,11 @@
 import { h } from "preact";
-import { FaGithub } from "react-icons/fa";
-
-import style from "./style";
+import { GoMarkGithub } from "react-icons/go";
 
 const About = () => (
   <main>
     <div className="text-center my-4">
       <a href="https://github.com/qualitymanifest/spotify-liked">
-        <FaGithub size="3em" />
+        <GoMarkGithub size="3em" />
       </a>
     </div>
     <p>

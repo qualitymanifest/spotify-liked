@@ -1,6 +1,6 @@
 import { h } from "preact";
 import { useState, useEffect } from "preact/hooks";
-import { Button } from "react-bootstrap";
+import { Button } from "reactstrap";
 
 import style from "./style";
 import { updateLikedTracks } from "../../utils/requests";
@@ -26,7 +26,7 @@ const FetchTracksSetting = ({ user }) => {
   return (
     <>
       {!message && (
-        <Button className={style.fadeIn} onClick={handleClick}>
+        <Button color="primary" className={style.fadeIn} onClick={handleClick}>
           Upload tracks from spotify
         </Button>
       )}
