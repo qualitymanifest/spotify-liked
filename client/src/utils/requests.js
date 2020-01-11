@@ -11,7 +11,7 @@ export const playTracks = async (artistId, trackUri) => {
 };
 
 export const queueTracks = async artistId => {
-  await fetch(`/api/queue_tracks/${artistId}`, { method: "PUT" });
+  return await fetch(`/api/queue_tracks/${artistId}`, { method: "PUT" });
 };
 
 export const getLikedTracks = async (artistId = "") => {
