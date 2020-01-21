@@ -1,9 +1,11 @@
 import { h } from "preact";
 import { GoMarkGithub } from "react-icons/go";
 
+import style from "./style";
+
 const About = () => (
-  <main>
-    <div className="text-center my-4">
+  <main className={style.wrapper}>
+    <div className="text-center mb-3">
       <a href="https://github.com/qualitymanifest/spotify-liked">
         <GoMarkGithub size="3em" />
       </a>
