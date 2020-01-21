@@ -1,6 +1,6 @@
 .scrollbar {
   position: fixed;
-  top: 50%;
+  top: calc(28px + 50%); /* halfway down, plus half of navbar height */
   right: 0;
   transform: translate(0, -50%); /* For vertically centering */
   width: calc(1rem + 4px);
