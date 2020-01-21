@@ -49,8 +49,7 @@ passport.use(
           displayName: profile.displayName,
           emails: profile.emails,
           accessToken,
-          refreshToken,
-          lastUpdate: new Date(0)
+          refreshToken
         }).save();
         // Create the playlist. Had to wait until after save to get user id
         const spotifyRes = await createPlaylist(
