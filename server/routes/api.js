@@ -123,7 +123,7 @@ module.exports = app => {
   app.get("/api/liked_tracks", (req, res) => {
     UserArtist.find(
       { userId: req.user.id },
-      "artistId name image",
+      "artistId name nameFirstLetter image",
       {
         sort: { name: 1 },
         collation: { locale: "en_US" }

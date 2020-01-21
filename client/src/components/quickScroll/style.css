@@ -1,0 +1,26 @@
+.scrollbar {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translate(0, -50%); /* For vertically centering */
+  width: calc(1rem + 4px);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 5px 0 0 5px;
+}
+
+.letter {
+  display: block;
+  margin: -6px;
+}
+
+.letter:first-of-type {
+  margin-top: 0px;
+}
+
+.letter:last-of-type {
+  margin-bottom: 0px;
+}

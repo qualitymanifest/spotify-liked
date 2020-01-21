@@ -4,8 +4,8 @@ import { MdQueue, MdQueueMusic, MdPlayCircleFilled } from "react-icons/md";
 import style from "./style";
 import { QUEUE, VIEW, PLAY } from "../../utils/constants";
 
-const ArtistCard = ({ artist }) => (
-  <div className={`${style.card} mx-1 my-1`}>
+const ArtistCard = ({ artist, firstLetter }) => (
+  <div className={`${style.card} mx-1 my-1 ${firstLetter}`}>
     <h5 className={style.cardTitle}>{artist.name}</h5>
     <div
       title={`Play ${artist.name}`}

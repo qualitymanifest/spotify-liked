@@ -5,6 +5,7 @@ const userArtistSchema = new Schema({
   userId: String,
   artistId: String,
   name: String,
+  nameFirstLetter: String,
   image: String,
   tracks: [
     {

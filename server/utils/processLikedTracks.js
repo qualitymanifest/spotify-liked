@@ -12,10 +12,14 @@ const processLikedTracks = (likedTracks, userId) => {
       featuredArtists: featuredArtists.map(fa => fa.name)
     };
     if (!artists[artist.id]) {
+      const nameFirstLetter = artist.name[0]
+        .toUpperCase()
+        .replace(/[^A-Z]/g, "");
       artists[artist.id] = {
         userId,
         artistId: artist.id,
         name: artist.name,
+        nameFirstLetter,
         image: images ? images[images.length - 2].url : "", // Using album art, not worth trouble of getting artist images
         tracks: [processedTrack]
       };

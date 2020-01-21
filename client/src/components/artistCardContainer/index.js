@@ -3,6 +3,7 @@ import { useState, useEffect } from "preact/hooks";
 
 import cardStyle from "../artistCard/style";
 import ArtistCard from "../artistCard";
+import QuickScroll from "../quickScroll";
 import TrackList from "../trackList";
 import { QUEUE, VIEW, PLAY } from "../../utils/constants";
 import animateAndCall from "../../utils/animateAndCall";
@@ -45,11 +46,22 @@ const ArtistCardContainer = ({ artists, addToast }) => {
       window.removeEventListener("click", handleClick);
     };
   }, []);
+  const firstLetters = new Set();
+  const artistCards = artists.map(artist => {
+    const { nameFirstLetter } = artist;
+    if (!firstLetters.has(nameFirstLetter)) {
+      firstLetters.add(nameFirstLetter);
+      return <ArtistCard firstLetter={nameFirstLetter} artist={artist} />;
+    }
+    return <ArtistCard firstLetter="" artist={artist} />;
+  });
+  // Artist names that start with punctuation don't have a first letter
+  // Better to do this here than check every artist
+  firstLetters.delete("");
   return (
     <>
-      {artists.map(artist => (
-        <ArtistCard artist={artist} />
-      ))}
+      {artistCards}
+      <QuickScroll letters={Array.from(firstLetters)} />
       {selectedArtist && (
         <TrackList
           artist={selectedArtist}
