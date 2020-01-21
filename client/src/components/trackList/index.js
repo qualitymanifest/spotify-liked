@@ -16,7 +16,7 @@ const TrackList = ({ artist, setSelectedArtist, addToast }) => {
       style.success
     );
     if (res.status === 200) {
-      return setTimeout(close, 600);
+      return setTimeout(close, 800);
     }
     const json = await res.json();
     return addToast({ header: "error", body: json.message, delay: 5000 });

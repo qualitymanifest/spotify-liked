@@ -23,7 +23,7 @@ const throttledMove = throttle(e => {
 }, 100);
 
 const handleTouchMove = e => {
-  throttledMove.call(this, e);
+  throttledMove(e);
   e.preventDefault();
 };
 

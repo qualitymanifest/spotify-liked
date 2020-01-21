@@ -68,8 +68,8 @@ svg.loading {
   animation: shadow-pulse 1s infinite;
 }
 .success .playSpan,
-svg.success {
-  animation: fade-later 4s;
+.success {
+  animation: fade-later 5s;
 }
 
 @keyframes fade-later {

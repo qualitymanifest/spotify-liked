@@ -23,14 +23,14 @@ const ArtistCard = ({ artist, firstLetter }) => (
       </span>
     </div>
     <div className="d-flex justify-content-around">
-      <MdQueue
-        pointer-events="bounding-box"
-        title={`Queue ${artist.name}`}
-        size="2em"
+      <span
         className={`${style.cardSvg} my-2`}
         data-action={QUEUE}
         data-id={artist.artistId}
-      />
+        title={`Queue ${artist.name}`}
+      >
+        <MdQueue pointer-events="none" size="2em" />
+      </span>
       <MdQueueMusic
         pointer-events="bounding-box"
         title={`View tracks by ${artist.name}`}
