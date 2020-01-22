@@ -1,7 +1,9 @@
-import { h } from "preact";
+import { h, createRef } from "preact";
 import throttle from "lodash.throttle";
 
 import style from "./style";
+
+const scrollbar = createRef();
 
 const handleClick = e => {
   const { letter } = e.target.dataset;
@@ -22,13 +24,27 @@ const throttledMove = throttle(e => {
   document.querySelector(`.${letter}`).scrollIntoView({ block: "center" });
 }, 100);
 
+const handleTouchStart = e => {
+  scrollbar.current.classList.add(style.scrolling);
+};
+
 const handleTouchMove = e => {
   throttledMove(e);
   e.preventDefault();
 };
 
+const handleTouchEnd = e => {
+  scrollbar.current.classList.remove(style.scrolling);
+};
+
 const QuickScroll = ({ letters }) => (
-  <div onTouchMove={handleTouchMove} className={style.scrollbar}>
+  <div
+    ref={scrollbar}
+    onTouchStart={handleTouchStart}
+    onTouchMove={handleTouchMove}
+    onTouchEnd={handleTouchEnd}
+    className={style.scrollbar}
+  >
     {letters.map(letter => (
       <span
         className={style.letter}
