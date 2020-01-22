@@ -21,7 +21,9 @@ const throttledMove = throttle(e => {
   if (!currentEl) return;
   const { letter } = currentEl.dataset;
   if (!letter) return;
-  document.querySelector(`.${letter}`).scrollIntoView({ block: "center" });
+  window.requestAnimationFrame(() =>
+    document.querySelector(`.${letter}`).scrollIntoView({ block: "center" })
+  );
 }, 100);
 
 const handleTouchStart = e => {
