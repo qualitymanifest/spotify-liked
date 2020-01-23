@@ -15,15 +15,28 @@ const handleMouseEnter = e => {
   handleClick(e);
 };
 
+// Prevents several mobile browser issues:
+// 1. iOS Safari would not recognize quickscroll touch events after a native
+// scroll, until you interacted with another element or scrolled such that
+// it toggled the menu bar.
+// 2. iOS Firefox would often allow quickscroll touchmoves to pass through
+document.querySelector("#app").addEventListener(
+  "touchstart",
+  e => {
+    if (e.target.dataset.letter) {
+      e.preventDefault();
+    }
+  },
+  { passive: false }
+);
+
 const throttledMove = throttle(e => {
   const { clientX, clientY } = e.changedTouches[0];
   const currentEl = document.elementFromPoint(clientX, clientY);
   if (!currentEl) return;
   const { letter } = currentEl.dataset;
   if (!letter) return;
-  window.requestAnimationFrame(() =>
-    document.querySelector(`.${letter}`).scrollIntoView({ block: "center" })
-  );
+  document.querySelector(`.${letter}`).scrollIntoView({ block: "center" });
 }, 100);
 
 const handleTouchStart = e => {
