@@ -9,6 +9,17 @@ import Settings from "../routes/settings";
 import ToastContainer from "./toastContainer";
 import { fetchUser } from "../utils/requests";
 
+// Prevents several mobile browser issues w/ quickscroll:
+// 1. iOS Safari would not recognize quickscroll touch events after a native
+// scroll, until you interacted with another element or scrolled such that
+// it toggled the menu bar.
+// 2. iOS Firefox would often allow quickscroll touchmoves to pass through
+const handleTouchStart = e => {
+  if (e.target.dataset.letter) {
+    e.preventDefault();
+  }
+};
+
 const App = () => {
   const [user, setUser] = useState(null);
   const [toasts, setToasts] = useState({});
@@ -31,7 +42,7 @@ const App = () => {
     setUser(user.displayName ? user : false);
   }, []);
   return (
-    <div id="app">
+    <div onTouchStart={handleTouchStart} id="app">
       <Header user={user} />
       <ToastContainer toasts={toasts} deleteToast={deleteToast} />
       <Switch>

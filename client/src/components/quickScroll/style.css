@@ -10,7 +10,7 @@
   cursor: pointer;
   user-select: none;
   border-radius: 5px 0 0 5px;
-  transition: width 0.2s;
+  transition: width 0.15s;
 }
 
 .scrolling {
