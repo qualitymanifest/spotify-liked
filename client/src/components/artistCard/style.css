@@ -8,6 +8,7 @@
   min-width: 152px; /* Max width that fits 2 side-by-side on iphone SE */
   background-color: rgb(30, 28, 54);
   color: #fff;
+  user-select: none; /* Prevents annoying & hard to undo selection on mobile */
 }
 
 .cardArtist {
