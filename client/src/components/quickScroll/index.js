@@ -3,7 +3,7 @@ import throttle from "lodash.throttle";
 
 import style from "./style";
 
-const scrollbar = createRef();
+const quickScrollRef = createRef();
 
 const handleClick = e => {
   const { letter } = e.target.dataset;
@@ -25,7 +25,7 @@ const throttledMove = throttle(e => {
 }, 100);
 
 const handleTouchStart = e => {
-  scrollbar.current.classList.add(style.scrolling);
+  quickScrollRef.current.classList.add(style.scrolling);
 };
 
 const handleTouchMove = e => {
@@ -34,16 +34,16 @@ const handleTouchMove = e => {
 };
 
 const handleTouchEnd = e => {
-  scrollbar.current.classList.remove(style.scrolling);
+  quickScrollRef.current.classList.remove(style.scrolling);
 };
 
 const QuickScroll = ({ letters }) => (
   <div
-    ref={scrollbar}
+    ref={quickScrollRef}
     onTouchStart={handleTouchStart}
     onTouchMove={handleTouchMove}
     onTouchEnd={handleTouchEnd}
-    className={style.scrollbar}
+    className={style.quickScroll}
   >
     {letters.map(letter => (
       <span
