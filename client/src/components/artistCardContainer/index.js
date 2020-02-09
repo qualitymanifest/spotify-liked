@@ -48,14 +48,10 @@ const ArtistCardContainer = ({ artists, addToast }) => {
   }, []);
   const firstLetters = new Set();
   const artistCards = artists.map(artist => {
-    const { nameFirstLetter } = artist;
-    if (!firstLetters.has(nameFirstLetter)) {
-      firstLetters.add(nameFirstLetter);
-      return <ArtistCard firstLetter={nameFirstLetter} artist={artist} />;
-    }
-    return <ArtistCard firstLetter="" artist={artist} />;
+    firstLetters.add(artist.nameFirstLetter);
+    return <ArtistCard firstLetter={artist.nameFirstLetter} artist={artist} />;
   });
-  // Artist names that start with punctuation don't have a first letter
+  // Artist names that start with punctuation or numbers don't have a first letter
   // Better to do this here than check every artist
   firstLetters.delete("");
   return (

@@ -5,9 +5,15 @@ import style from "./style";
 
 const quickScrollRef = createRef();
 
+const scrollToLetter = element => {
+  if (!element || !element.dataset || !element.dataset.letter) return;
+  document
+    .getElementsByClassName(element.dataset.letter)[0]
+    .scrollIntoView({ block: "center" });
+};
+
 const handleClick = e => {
-  const { letter } = e.target.dataset;
-  document.querySelector(`.${letter}`).scrollIntoView({ block: "center" });
+  scrollToLetter(e.target);
 };
 
 const handleMouseEnter = e => {
@@ -18,14 +24,12 @@ const handleMouseEnter = e => {
 const throttledMove = throttle(e => {
   const { clientX, clientY } = e.changedTouches[0];
   const currentEl = document.elementFromPoint(clientX, clientY);
-  if (!currentEl) return;
-  const { letter } = currentEl.dataset;
-  if (!letter) return;
-  document.querySelector(`.${letter}`).scrollIntoView({ block: "center" });
+  scrollToLetter(currentEl);
 }, 100);
 
 const handleTouchStart = e => {
   quickScrollRef.current.classList.add(style.scrolling);
+  scrollToLetter(e.target);
 };
 
 const handleTouchMove = e => {
